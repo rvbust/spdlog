@@ -9,7 +9,7 @@ include(CMakeDependentOption)
 # set default build to release
 #---------------------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug" FORCE)
 endif()
 
 
@@ -25,11 +25,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    add_compile_options("-Wall")
-    add_compile_options("-Wextra")
-    add_compile_options("-Wconversion")
-    add_compile_options("-pedantic")
-    add_compile_options("-Wfatal-errors")
+  add_compile_options("-Wall")
+  add_compile_options("-Wextra")
+  add_compile_options("-Wconversion")
+  add_compile_options("-pedantic")
+  add_compile_options("-Wfatal-errors")
 endif()
 
 #---------------------------------------------------------------------------------------
@@ -43,9 +43,9 @@ include(cmake/sanitizers.cmake)
 
 # Check if spdlog is being used directly or via add_subdirectory
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    set(SPDLOG_MASTER_PROJECT ON)
+  set(SPDLOG_MASTER_PROJECT ON)
 else()
-    set(SPDLOG_MASTER_PROJECT OFF)
+  set(SPDLOG_MASTER_PROJECT OFF)
 endif()
 
 option(SPDLOG_BUILD_EXAMPLES "Build examples" ${SPDLOG_MASTER_PROJECT})
@@ -74,27 +74,31 @@ set_target_properties(spdlog_shared PROPERTIES DEBUG_POSTFIX "-debug")
 # add_library(spdlog::header_only ALIAS spdlog_header_only)
 
 if(SPDLOG_FMT_EXTERNAL AND NOT TARGET fmt::fmt)
-    find_package(fmt REQUIRED CONFIG)
+  find_package(fmt REQUIRED CONFIG)
 endif()
 
 if(SPDLOG_FMT_EXTERNAL)
-    target_compile_definitions(spdlog_shared INTERFACE SPDLOG_FMT_EXTERNAL)
-    target_link_libraries(spdlog_shared INTERFACE fmt::fmt)
-    # target_compile_definitions(spdlog_header_only INTERFACE SPDLOG_FMT_EXTERNAL)
-    # target_link_libraries(spdlog_header_only INTERFACE fmt::fmt)
+  # Enable fmtlib.
+  # get_filename_component(FMT_INCLUDE_DIR "../../Install/FmtLib/include" ABSOLUTE CACHE)
+  
+  target_compile_definitions(spdlog_shared INTERFACE SPDLOG_FMT_EXTERNAL)
+  # target_include_directories(spdlog_shared INTERFACE ${FMT_INCLUDE_DIR})
+  target_link_libraries(spdlog_shared INTERFACE fmt::fmt)
+  # target_compile_definitions(spdlog_header_only INTERFACE SPDLOG_FMT_EXTERNAL)
+  # target_link_libraries(spdlog_header_only INTERFACE fmt::fmt)
 endif()
 
 if(SPDLOG_BUILD_EXAMPLES)
-    add_subdirectory(example)
+  add_subdirectory(example)
 endif()
 
 if(SPDLOG_BUILD_TESTS)
-    include(CTest)
-    add_subdirectory(tests)
+  include(CTest)
+  add_subdirectory(tests)
 endif()
 
 if(SPDLOG_BUILD_BENCH)
-    add_subdirectory(bench)
+  add_subdirectory(bench)
 endif()
 
 #---------------------------------------------------------------------------------------
